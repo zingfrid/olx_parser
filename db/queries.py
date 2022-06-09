@@ -64,7 +64,7 @@ def create_ad(db_cursor: SqliteCursor,
     db_cursor.execute("""
     insert into ads(external_id, title, price, url, author_id, platform_created_at)
     values (?,?,?,?,?,?);
-    """, (data.external_id, data.title, data.price, data.url, data.author_id, data.created))
+    """, (data.external_id, data.title, data.price, data.url, data.external_id, data.created))
 
 
 def add_phones(db_cursor: SqliteCursor,

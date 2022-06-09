@@ -14,6 +14,10 @@ lxml = "*"
 python-dateutil = "*"
 python-telegram-bot = "*"
 requests = "*"
+punq = "*"
+jinja2 = "*"
+rfeed = "*"
+pydantic = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
