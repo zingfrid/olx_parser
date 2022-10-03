@@ -13,7 +13,7 @@ def send_message_into_telegram(bot: Bot, new_ads: List[NewAdModel]) -> None:
     for chat in settings.TELEGRAM_CHAT_IDS:
         print (chat)
         for item in reversed(new_ads):
-            text = f'''\n{item.phones}\n{item.url}'''
+            text = f'''\n{item.phones} == {item.price}\n{item.url}'''
             try:
                 bot.send_message(chat_id=chat, text=text)
                 time.sleep(0.250)
