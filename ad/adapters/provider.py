@@ -4,7 +4,8 @@ from os.path import join, exists
 from pathlib import Path
 from typing import List, Tuple, Dict, Type
 from lxml import etree
-from requests import Session
+from requests import Session 
+import re
 
 from ad.core.adapters.provider import CreateAdsProvider, DetailedAdProvider
 from ad.core.errors import AdapterError
@@ -15,6 +16,12 @@ class _CreateProviderOlx1(CreateAdsProvider):
 
     def get_raw(self, start_url) -> List[Tuple]:
         html = _get_olx_search_html(start_url)
+
+        min_news_id = re.search('window.__PRERENDERED_STATE__= (.*|$)', html)
+#        print(min_news_id.groups())
+#        file = open("car2.txt", "w")
+#        file.write(min_news_id.groups()[0])
+
         dom = etree.HTML(html)
         is_empty_search = len(dom.xpath('//div[contains(@class, "emptynew")]')) == 1
         if is_empty_search:
@@ -35,8 +42,9 @@ class _CreateProviderOlx1(CreateAdsProvider):
         #print (item.xpath('.//p[contains(@data-testid, "ad-price")]/text()'))
         dirty_price = item.xpath('.//p[contains(@data-testid, "ad-price")]/text()')[0]
         date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[2]
-        name = item.xpath('.//h6[contains(@class, "css-v3vynn-Text")]/text()')[0]
-        print(name)
+        name = item.xpath('.//h6[contains(@class, "css-1pvd0aj-Text")]/text()')[0]
+        #print (item)
+        #print(name)
         return title, dirty_price, date, link, name
 
 
