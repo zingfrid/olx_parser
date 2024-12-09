@@ -49,7 +49,7 @@ class _CreateProviderOlx1(CreateAdsProvider):
         #return
         #print (item.xpath('.//p[contains(@data-testid, "ad-price")]/text()'))
         dirty_price = item.xpath('.//p[contains(@data-testid, "ad-price")]/text()')[0]
-        date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[2]
+        date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[0]
         name = item.xpath('.//h4[contains(@class, "css-1s3qyje")]/text()')[0]
 #        print (item)
 #        print(title)
