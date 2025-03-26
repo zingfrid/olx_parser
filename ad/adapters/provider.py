@@ -42,7 +42,8 @@ class _CreateProviderOlx1(CreateAdsProvider):
             # css-z3gu2d
         )  # ['Сдам 2-х комнатную квартиру на длительный период', 'Днепр', '05 ноября 2021 г.', '45 м²']
         default_link = 'https://www.olx.ua'
-        link = default_link + item.xpath('.//a[contains(@class, "css-qo0cxu")]/@href')[0]
+        link = default_link + item.xpath('.//a[contains(@class, "css-1tqlkj0")]/@href')[0]
+            # css-qo0cxu
         # link = default_link + item.xpath('./a/@href')[0]
 
         #print(html.tostring(link))
