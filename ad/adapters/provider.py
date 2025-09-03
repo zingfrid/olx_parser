@@ -33,8 +33,10 @@ class _CreateProviderOlx1(CreateAdsProvider):
 
     @staticmethod
     def _process_item(item):
+        title_selector = "css-hzlye5"
         title, *_ = item.xpath(
-            './/h4[contains(@class, "css-1g61gc2")]/text()'
+            './/h4[contains(@class, "'+title_selector+'")]/text()'
+            # css-1g61gc2
             # css-1sq4ur2
             # css-1s3qyje
             # css-1wxaaza
@@ -52,7 +54,7 @@ class _CreateProviderOlx1(CreateAdsProvider):
         #print (item.xpath('.//p[contains(@data-testid, "ad-price")]/text()'))
         dirty_price = item.xpath('.//p[contains(@data-testid, "ad-price")]/text()')[0]
         date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[0]
-        name = item.xpath('.//h4[contains(@class, "css-1g61gc2")]/text()')[0]
+        name = item.xpath('.//h4[contains(@class, "'+title_selector+'")]/text()')[0]
 #        print (item)
 #        print(title)
 #        print(name)
