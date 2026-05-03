@@ -33,9 +33,10 @@ class _CreateProviderOlx1(CreateAdsProvider):
 
     @staticmethod
     def _process_item(item):
-        title_selector = "css-hzlye5"
+        title_selector = "css-wlcw7o"
         title, *_ = item.xpath(
             './/h4[contains(@class, "'+title_selector+'")]/text()'
+            #"css-hzlye5"
             # css-1g61gc2
             # css-1sq4ur2
             # css-1s3qyje
