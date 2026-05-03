@@ -57,9 +57,9 @@ def fetch_ads(session: Session) -> Set[AdModel]:
 
 #        print(item)
         try:
-            price = int(
+            price = round(float(
                 item[1].split(' грн.')[0].strip().replace(' ', '')
-            )
+            ))
         except ValueError:
             logger.exception('=== Error during parsing a price ===')
             continue

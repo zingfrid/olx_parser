@@ -18,6 +18,7 @@ punq = "*"
 jinja2 = "*"
 rfeed = "*"
 pydantic = "*"
+telegram = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "*"
