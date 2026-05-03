@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from os.path import join, exists
 from pathlib import Path
 from typing import List, Tuple, Dict, Type
-from lxml import etree
+from lxml import etree, html
 from requests import Session 
 import re
 
@@ -33,18 +33,33 @@ class _CreateProviderOlx1(CreateAdsProvider):
 
     @staticmethod
     def _process_item(item):
+        title_selector = "css-wlcw7o"
         title, *_ = item.xpath(
-            './/p[contains(@class, "Text")]/text()'
+            './/h4[contains(@class, "'+title_selector+'")]/text()'
+            #"css-hzlye5"
+            # css-1g61gc2
+            # css-1sq4ur2
+            # css-1s3qyje
+            # css-1wxaaza
+            # css-16v5mdi er34gjf0
+            # css-z3gu2d
         )  # ['Сдам 2-х комнатную квартиру на длительный период', 'Днепр', '05 ноября 2021 г.', '45 м²']
         default_link = 'https://www.olx.ua'
-        link = default_link + item.xpath('./a/@href')[0]
+        link = default_link + item.xpath('.//a[contains(@class, "css-1tqlkj0")]/@href')[0]
+            # css-qo0cxu
+        # link = default_link + item.xpath('./a/@href')[0]
+
+        #print(html.tostring(link))
         #print(link)
+        #return
         #print (item.xpath('.//p[contains(@data-testid, "ad-price")]/text()'))
         dirty_price = item.xpath('.//p[contains(@data-testid, "ad-price")]/text()')[0]
-        date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[2]
-        name = item.xpath('.//h6[contains(@class, "css-1pvd0aj-Text")]/text()')[0]
-        #print (item)
-        #print(name)
+        date = item.xpath('.//p[contains(@data-testid, "location-date")]/text()')[0]
+        name = item.xpath('.//h4[contains(@class, "'+title_selector+'")]/text()')[0]
+#        print (item)
+#        print(title)
+#        print(name)
+#        print(dirty_price)
         return title, dirty_price, date, link, name
 
 
