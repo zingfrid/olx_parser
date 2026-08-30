@@ -1,10 +1,6 @@
-import pickle
-from contextlib import contextmanager
-from os.path import join, exists
-from pathlib import Path
 from typing import List, Tuple, Dict, Type
 from lxml import etree, html
-from requests import Session 
+from httpx import Client
 import re
 
 from ad.core.adapters.provider import CreateAdsProvider, DetailedAdProvider
@@ -194,25 +190,28 @@ class DetailedAdProviderOlx(DetailedAdProvider):
         return _provider_klass().get_raw(external_url)
 
 
-_BASE_DIR = Path(__file__).resolve(strict=True).parent
-
-
-@contextmanager
-def get_session() -> Session:
-    _path = join(_BASE_DIR, 'session.pickle')
-    if not exists(_path):
-        s = Session()
-    else:
-        s: Session = pickle.load(open(_path, 'rb'))
-    try:
-        yield s
-    finally:
-        pickle.dump(s, open(_path, 'wb'))
+_OLX_HEADERS = {
+    'User-Agent': (
+        'Mozilla/5.0 (X11; Linux x86_64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/139.0.0.0 Safari/537.36'
+    ),
+    'Accept': (
+        'text/html,application/xhtml+xml,application/xml;q=0.9,'
+        'image/avif,image/webp,*/*;q=0.8'
+    ),
+    'Accept-Language': 'uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7',
+}
 
 
 def _get_olx_search_html(url) -> str:
-    with get_session() as session:
-        r = session.get(url)
+    with Client(
+        http2=True,
+        follow_redirects=True,
+        timeout=30.0,
+        headers=_OLX_HEADERS,
+    ) as client:
+        r = client.get(url)
         r.raise_for_status()
         return r.text
 

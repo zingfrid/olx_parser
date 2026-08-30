@@ -11,6 +11,7 @@ beautifulsoup4 = "*"
 environs = "*"
 fake-useragent = "*"
 lxml = "*"
+httpx = {extras = ["http2"], version = "*"}
 python-dateutil = "*"
 python-telegram-bot = "*"
 requests = "*"
