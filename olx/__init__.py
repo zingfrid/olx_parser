@@ -20,6 +20,7 @@ from db.queries import add_phones
 from db.queries import create_ad
 from db.queries import create_author
 from db.queries import get_author_id
+from db.queries import get_existing_ad_urls
 from db.queries import get_exists_ads
 from db.utils import check_db
 from olx.utils import _get_landlord_created_at
@@ -33,6 +34,17 @@ from utils.models import AdModel
 from utils.models import LandLordModel
 from utils.models import NewAdModel
 from ad.adapters import provider as Prov
+
+
+def _normalize_ad_url(url: str) -> str:
+    parsed_url = urlparse(url)
+    return parsed_url._replace(query='', fragment='').geturl()
+
+
+def _get_ad_key(url: str) -> str:
+    parsed_url = urlparse(url)
+    return parsed_url.path.rsplit('/', 1)[-1] or parsed_url.path
+
 
 def fetch_ads(session: Session) -> Set[AdModel]:
     url = build_url()
@@ -66,11 +78,13 @@ def fetch_ads(session: Session) -> Set[AdModel]:
 #        print(price)
         day = item[2]
 #        print(day)
+        ad_url = _normalize_ad_url(item[3])
+        ad_key = _get_ad_key(ad_url)
         ad = AdModel(
-            external_id=str(int(hashlib.sha1(item[3].encode('utf-8')).hexdigest(), 16) % (10 ** 8)),
+            external_id=str(int(hashlib.sha1(ad_key.encode('utf-8')).hexdigest(), 16) % (10 ** 8)),
             title=item[4],
             price=price,
-            url=item[3],
+            url=ad_url,
             author_id=day,
         )
         #print(ad)
@@ -89,7 +103,15 @@ def filter_new_ads(session: Session, ads: Set[AdModel]) -> List[NewAdModel]:
         with closing(db_connect.cursor()) as db_cursor:
             check_db(db_connect, db_cursor)
             exists_ads = get_exists_ads(db_cursor, sorted([ad.external_id for ad in ads]))
-            ads = [ad for ad in ads if ad.external_id not in exists_ads]
+            existing_ad_keys = {
+                _get_ad_key(url)
+                for url in get_existing_ad_urls(db_cursor)
+            }
+            ads = [
+                ad for ad in ads
+                if ad.external_id not in exists_ads
+                and _get_ad_key(ad.url) not in existing_ad_keys
+            ]
            # print(ads)
             if not ads:
                 logger.info('=== New ads not found ===')

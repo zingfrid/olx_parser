@@ -26,6 +26,12 @@ def get_exists_ads(db_cursor: SqliteCursor,
     return result
 
 
+def get_existing_ad_urls(db_cursor: SqliteCursor) -> List[str]:
+    return [item[0] for item in db_cursor.execute(
+        'select url from ads;'
+    ).fetchall()]
+
+
 @db_cache
 def get_author_id(db_cursor: SqliteCursor,
                   external_id: str) -> int:
